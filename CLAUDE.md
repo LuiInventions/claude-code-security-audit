@@ -65,6 +65,7 @@ Generate a complete, isolated security audit for the authorized target:
 - `scripts/32_report_correlator.py`
 - `scripts/15_report_generator.py`
 - `scripts/33_ci_gate.py`
+- `scripts/19_http_client.py` (CLI tool for manual inspections)
 
 # Report Requirements
 

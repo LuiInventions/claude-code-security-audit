@@ -24,7 +24,7 @@ def audit(url):
             problems.append("Secure fehlt")
         if not cookie.has_nonstandard_attr("HttpOnly"):
             problems.append("HttpOnly fehlt")
-        same_site = cookie._rest.get("SameSite", "") if hasattr(cookie, "_rest") else ""
+        same_site = cookie.get_nonstandard_attr("SameSite", "")
         if not same_site:
             problems.append("SameSite fehlt")
         if cookie.name.startswith("__Host-") and (not cookie.secure or cookie.path != "/"):

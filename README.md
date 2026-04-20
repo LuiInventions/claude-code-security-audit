@@ -25,10 +25,10 @@ First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/
 
 **Linux / macOS:**
 ```bash
-chmod +x setup.sh ./setup.sh
+chmod +x setup.sh && ./setup.sh
 ```
 
-### 3. Start claude code
+### 4. Start Claude Code
 Run Claude Code in the project folder
 
 **Windows:**
