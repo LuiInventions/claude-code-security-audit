@@ -29,22 +29,13 @@ chmod +x setup.sh launch-website-audit.sh
 ./setup.sh
 ```
 
-### 3. Start Automated Audit
-Run the launcher script and enter the target URL when prompted.
+### 3. Start claude code
+Run Claude Code in the project folder
 
 **Windows:**
-```powershell
-./launch-website-audit.bat
 ```
-
-**Linux / macOS:**
-```bash
-./launch-website-audit.sh
+claude
 ```
-
-The script will automatically update `config.json`, launch **Claude Code** to perform the audit, and open the HTML report once finished.
-
----
 
 ## 📋 Prerequisites
 
