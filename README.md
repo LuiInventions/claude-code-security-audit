@@ -1,4 +1,4 @@
-# 🔐 sec-audit
+# 🔐 sec-audit CLAUDE CODE
 
 Portable, defensive security audit toolkit for websites and web APIs on **authorized targets only**.
 
@@ -33,8 +33,24 @@ Run Claude Code in the project folder
 
 **Windows:**
 ```
-claude
+start_claude_audit.bat
+````
+
+###NEW: Opencode as Exploiter/tester for the safety risks report of claude code.
+
+After Claude has done its work
+
+in /OpenCode_Audit
+there you need to paste the report from Claude Code (html)
+
+then you can click on
 ```
+start_opencode_exploiter.bat
+```
+This will start OpenCode in /OpenCode_Audit
+
+then just say something like: start with testing, and it will start testing
+
 
 ## 📋 Prerequisites
 
