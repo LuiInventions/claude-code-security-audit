@@ -8,11 +8,14 @@ Portable, defensive security audit toolkit for websites and web APIs on **author
 
 ### 1. Clone the Project
 ```bash
-git clone https://github.com/LuiInventions/claude-code-security-audit.git
+git clone https://github.com/LuiInventions/claude-code-security-audit
+```
+### 2. Go to Project Folder
+```bash
 cd claude-code-security-audit
 ```
 
-### 2. Setup Environment
+### 3. Setup Environment
 First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/claude-code`) and Python 3.11+.
 
 **Windows:**
