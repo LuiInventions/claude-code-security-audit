@@ -1,0 +1,24 @@
+{
+  "allowed_targets": [
+    "https://your-authorized-domain.example"
+  ],
+  "crawl": {
+    "max_depth": 3,
+    "max_urls": 500,
+    "timeout_seconds": 10,
+    "user_agent": "SecurityAudit/1.0 (+https://your-authorized-domain.example)"
+  },
+  "rate_limit": {
+    "requests_per_second": 5,
+    "pause_on_429_seconds": 30
+  },
+  "excluded_paths": [
+    "/logout",
+    "/admin/delete",
+    "/api/*/delete"
+  ],
+  "wordlists": {
+    "exposed_files": "wordlists/common-exposed.txt",
+    "directories": "wordlists/common-dirs.txt"
+  }
+}

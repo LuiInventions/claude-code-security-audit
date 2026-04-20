@@ -1,0 +1,10 @@
+admin
+backup
+debug
+dev
+private
+staging
+test
+tmp
+uploads
+api
