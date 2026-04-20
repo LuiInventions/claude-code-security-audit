@@ -2,13 +2,61 @@
 
 Portable, defensive security audit toolkit for websites and web APIs on **authorized targets only**.
 
-`sec-audit` is built for practical repo use:
-- ✅ GitHub-ready structure
-- ✅ Windows and Linux/macOS setup scripts
-- ✅ isolated run artifacts
-- ✅ HTML report output
-- ✅ separate remediation prompt for a coding agent
-- ✅ no hardcoded local user paths in the project code
+---
+
+## 🚀 Quick Start
+
+### 1. Setup Environment
+First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/claude-code`) and Python 3.11+.
+
+**Windows:**
+```powershell
+./setup.ps1
+```
+
+**Linux / macOS:**
+```bash
+chmod +x setup.sh launch-website-audit.sh
+./setup.sh
+```
+
+### 2. Start Automated Audit
+Run the launcher script and enter the target URL when prompted.
+
+**Windows:**
+```powershell
+./launch-website-audit.bat
+```
+
+**Linux / macOS:**
+```bash
+./launch-website-audit.sh
+```
+
+The script will automatically update `config.json`, launch **Claude Code** to perform the audit, and open the HTML report once finished.
+
+---
+
+## 📋 Prerequisites
+
+To use the automated audit workflow, you need:
+- **Claude Code**: The primary AI agent driving the audit. Install via: `npm install -g @anthropic-ai/claude-code`
+- **Python 3.11+**: Required for the underlying audit scripts.
+- **Git**: For version control and project management.
+- **Node.js**: Required for Claude Code.
+
+---
+
+## 🤖 Claude-Integrated Workflow
+
+This project is optimized for use with **Claude Code**. When you run the launch script:
+1.  **URL Input**: You enter the target URL (e.g., `https://example.com`).
+2.  **Target Preparation**: If the URL is not already in `config.json`, it is added to the `allowed_targets`.
+3.  **Claude Launch**: Claude Code starts and reads `CLAUDE.md`, which contains the "laws" and workflow instructions for the audit.
+4.  **Autonomous Audit**: Claude executes the Python scripts in sequence, analyzes results, and can even improve scripts or fix issues in real-time.
+5.  **Reporting**: Following the audit, Claude generates a JSON finding list, an HTML report, and a specialized remediation prompt for developers.
+
+---
 
 ## ✨ What It Does
 
@@ -27,235 +75,86 @@ It covers:
 - 🧠 exploitability correlation
 - 🛠️ remediation guidance for coding agents
 
-## 🧭 High-Level Workflow
-
-The default audit pipeline is:
-
-1. **Recon**
-   Collect URLs, sitemap hints, DNS data, and basic technology fingerprints.
-2. **Inventory**
-   Build a normalized target inventory of pages, APIs, forms, auth flows, uploads, and hosts.
-3. **Baseline Hardening Checks**
-   Evaluate headers, TLS, CSP, cookies, exposed files, HTTP methods, JS libraries, and redirects.
-4. **Area-Specific Security Checks**
-   Analyze API exposure, auth surface, CSRF workflows, authorization hints, upload/download behavior, bundle leaks, client routes, and abuse patterns.
-5. **Correlation & Reporting**
-   Correlate findings, estimate exploitability, generate an HTML report, and create a remediation prompt for a coding agent.
-
 ## 🧰 Feature Overview
 
 ### Recon & Discovery
-
-- `scripts/11_crawler.py`
-  Crawls the target and stores discovered URLs.
-- `scripts/07_robots_sitemap.py`
-  Parses `robots.txt` and `sitemap.xml`.
-- `scripts/13_dns_recon.py`
-  Checks SPF, DMARC, CAA, and related DNS hardening indicators.
-- `scripts/14_tech_fingerprint.py`
-  Detects high-level server/framework hints.
+- `scripts/11_crawler.py`: Crawls the target and stores discovered URLs.
+- `scripts/07_robots_sitemap.py`: Parses `robots.txt` and `sitemap.xml`.
+- `scripts/13_dns_recon.py`: Checks SPF, DMARC, CAA, and DNS hardening.
+- `scripts/14_tech_fingerprint.py`: Detects server/framework hints.
 
 ### Inventory & Dispatch
-
-- `scripts/17_inventory.py`
-  Builds a normalized inventory of pages, APIs, forms, auth pages, uploads, downloads, and hosts.
-- `scripts/18_dispatcher.py`
-  Maps the inventory into test scopes for downstream scripts.
-- `scripts/20_run_context.py`
-  Creates isolated run directories and metadata.
-- `scripts/auditlib.py`
-  Shared helper layer for config loading, run paths, rate-limited HTTP, redaction, and artifact writing.
+- `scripts/17_inventory.py`: Builds a normalized inventory of pages, APIs, forms, etc.
+- `scripts/18_dispatcher.py`: Maps inventory into test scopes.
+- `scripts/20_run_context.py`: Creates isolated run directories.
+- `scripts/auditlib.py`: Shared logic for HTTP, rate-limits, and artifact writing.
 
 ### Baseline Hardening Checks
-
-- `scripts/01_headers.py`
-  Security header presence and weakness checks.
-- `scripts/02_exposed_files.py`
-  Probes common public files and exposed paths.
-- `scripts/03_tls_check.py`
-  Checks certificate expiry, weak TLS versions, weak ciphers, and self-signed certs.
-- `scripts/04_csp_analyzer.py`
-  Parses CSP and highlights risky directives like `unsafe-inline`.
-- `scripts/05_cors_check.py`
-  Tests permissive or reflected CORS behavior.
-- `scripts/06_cookie_audit.py`
-  Reviews cookie flags such as `Secure`, `HttpOnly`, and `SameSite`.
-- `scripts/08_js_libs.py`
-  Detects common JS libraries and known vulnerable versions.
-- `scripts/09_form_probe.py`
-  Safely checks form/API endpoints for origin handling and simple rate-limit behavior.
-- `scripts/10_http_methods.py`
-  Enumerates risky HTTP methods.
-- `scripts/12_open_redirect.py`
-  Checks common redirect parameters for open redirect behavior.
+- `scripts/01_headers.py`: Security header checks.
+- `scripts/02_exposed_files.py`: Probes common public files.
+- `scripts/03_tls_check.py`: Certificate and cipher suite audit.
+- `scripts/04_csp_analyzer.py`: Highlights risky CSP directives.
+- `scripts/05_cors_check.py`: Tests for permissive CORS.
+- `scripts/06_cookie_audit.py`: Reviews cookie security flags.
+- `scripts/08_js_libs.py`: Detects vulnerable JS libraries.
+- `scripts/09_form_probe.py`: Checks origin handling and rate-limits.
+- `scripts/10_http_methods.py`: Enumerates risky HTTP methods.
+- `scripts/12_open_redirect.py`: Logic-based redirect testing.
 
 ### Area-Specific Security Checks
+- `scripts/21_api_discovery.py`: JSON/GraphQL/API surface detection.
+- `scripts/22_auth_surface.py`: Login/logout flow review.
+- `scripts/23_authz_idor.py`: Heuristics for authorization gaps.
+- `scripts/24_csrf_workflows.py`: Inspects missing CSRF signals.
+- `scripts/25_upload_download.py`: Checks public exposure of file operations.
+- `scripts/26_reflection_probe.py`: Harmless canary reflection detection.
+- `scripts/27_injection_signals.py`: Identifies disclose-heavy error states.
+- `scripts/28_bundle_secrets.py`: Scans for leaked secrets in bundles.
+- `scripts/29_client_routes.py`: Frontend route security analysis.
+- `scripts/30_subdomain_hosts.py`: Coverage for reachable host variants.
+- `scripts/31_rate_limit_abuse.py`: Sensitive endpoint throttling checks.
 
-- `scripts/21_api_discovery.py`
-  Looks for exposed API docs, JSON surfaces, and GraphQL behavior.
-- `scripts/22_auth_surface.py`
-  Reviews login/reset/logout flows for weak patterns like bad caching or missing CSRF hints.
-- `scripts/23_authz_idor.py`
-  Performs safe heuristics for object-level authorization gaps.
-- `scripts/24_csrf_workflows.py`
-  Inspects state-changing forms for missing CSRF signals.
-- `scripts/25_upload_download.py`
-  Checks upload/download workflows for public exposure and weak protection signals.
-- `scripts/26_reflection_probe.py`
-  Uses a harmless canary to detect unsafe reflection contexts.
-- `scripts/27_injection_signals.py`
-  Searches for stack traces and error disclosures that often support injection findings.
-- `scripts/28_bundle_secrets.py`
-  Scans bundles and source maps for secret or infrastructure leak patterns.
-- `scripts/29_client_routes.py`
-  Reviews client routes, special frontend resources, and route-level header drift.
-- `scripts/30_subdomain_hosts.py`
-  Extends coverage to reachable host variants and subdomains.
-- `scripts/31_rate_limit_abuse.py`
-  Checks whether sensitive technical endpoints appear to lack meaningful throttling.
-
-### Correlation, Reporting & Gating
-
-- `scripts/16_exploitability.py`
-  Adds defensive, high-level exploitability context to relevant findings.
-- `scripts/32_report_correlator.py`
-  Correlates findings into combined risk chains.
-- `scripts/15_report_generator.py`
-  Generates the HTML report and the remediation prompt for a coding agent.
-- `scripts/33_ci_gate.py`
-  Allows simple severity gating for CI-style workflows.
-
-## 🚀 Quick Start
-
-### Windows
-
-```powershell
-./setup.ps1
-notepad config.json
-./run-audit.ps1
-```
-
-### Linux / macOS
-
-```bash
-chmod +x setup.sh run-audit.sh
-./setup.sh
-$EDITOR config.json
-./run-audit.sh
-```
-
-If `config.json` does not exist, it is created automatically from `config.example.json`.
-
-## ⚙️ Configuration
-
-Main settings live in `config.json`.
-
-Important fields:
-- `allowed_targets`
-  Only domains explicitly authorized for testing.
-- `crawl.max_depth`
-  Maximum crawl depth.
-- `crawl.max_urls`
-  URL budget for discovery.
-- `crawl.timeout_seconds`
-  Per-request timeout.
-- `crawl.user_agent`
-  Audit user agent string. You should personalize this.
-- `rate_limit.requests_per_second`
-  Max request rate used by the shared HTTP client.
-- `rate_limit.pause_on_429_seconds`
-  Backoff when the target returns `429`.
-- `excluded_paths`
-  Paths that should never be actively tested.
-
-## 📦 Setup Scripts
-
-- `setup.ps1`
-  Creates `.venv`, installs Python dependencies, and seeds `config.json`.
-- `setup.sh`
-  Unix equivalent of the same bootstrap flow.
-- `launch-website-audit.ps1`
-  Starts a Claude-driven audit flow on Windows.
-- `launch-website-audit.bat`
-  Convenience wrapper for the PowerShell launcher.
-
-## 🧰 GitHub Readiness
-
-This repository is prepared for clean public or team-internal GitHub use:
-
-- `config.json` is ignored so local target scopes and personal audit settings stay private.
-- generated findings, reports, prompts, logs, caches, and virtual environments are ignored.
-- `.gitattributes` normalizes text and script line endings across Windows and Unix environments.
-- `.github/workflows/ci.yml` runs a lightweight CI check for dependency install, Python compilation, and run-context smoke validation.
-- `LICENSE` and `CONTRIBUTING.md` are included for repo hygiene and collaboration.
-
-## 🗂️ Output Structure
-
-Each audit run gets its own run ID.
-
-Run-local artifacts:
-- `findings/runs/<run_id>/...`
-- `reports/runs/<run_id>/report.html`
-- `reports/runs/<run_id>/coding_agent_prompt.txt`
-
-Top-level convenience artifacts:
-- `reports/<run_id>_<timestamp>.html`
-- `reports/<run_id>_<timestamp>_coding_agent_prompt.txt`
-
-## 🤖 Coding-Agent Prompt
-
-Every generated report is paired with a **dedicated remediation prompt** for a coding agent.
-
-That prompt explains:
-- which findings were identified
-- which issues should be fixed first
-- the technical remediation direction
-- that tests must be added or updated
-- which remaining risks should be manually retested
+### Correlation & Reporting
+- `scripts/16_exploitability.py`: Adds defensive exploitability context.
+- `scripts/32_report_correlator.py`: Correlates findings into risk chains.
+- `scripts/15_report_generator.py`: Generates HTML reports and remediation prompts.
 
 ## 🛡️ Safety Model
 
 This toolkit is intentionally defensive:
-- no brute-force attacks
-- no destructive exploit payloads
-- no weaponization guidance
-- no active exploit instructions in the report
-- secrets are redacted where possible
+- **No brute-force** attacks.
+- **No destructive** exploit payloads.
+- **No weaponization** guidance.
+- **No active exploit instructions** in reports.
+- **Redacted secrets** in artifacts.
+
+## ⚖️ Disclaimer
+
+> [!CAUTION]
+> **This software is provided for educational and authorized security auditing purposes only.**
+>
+> 1.  **Authorization**: You MUST have explicit, written permission from the target's owner before running this toolkit. Unauthorized testing is illegal.
+> 2.  **Liability**: The authors and contributors of `sec-audit` assume **no liability** and are **not responsible** for any misuse, damage, data loss, or legal consequences caused by this program.
+> 3.  **Safety**: While designed to be non-destructive, any automated tool carries risks. Use at your own risk.
+>
+> **By using this project, you agree to these terms.**
+
+---
+
+## 🗂️ Output Structure
+
+Each audit run gets a unique Run ID.
+- `findings/runs/<run_id>/`: Raw JSON artifacts.
+- `reports/runs/<run_id>/report.html`: The main audit result.
+- `reports/runs/<run_id>/coding_agent_prompt.txt`: Prompt for code remediation.
 
 ## 🕷️ Optional: Katana
 
-For better crawling coverage, install `katana`.
+For better crawling coverage, install `katana`:
+- **Windows**: Place `katana.exe` at `tools/katana.exe`.
+- **Linux / macOS**: `go install github.com/projectdiscovery/katana/cmd/katana@latest`
 
-### Windows
-
-Place:
-- `katana.exe` at `tools/katana.exe`
-
-### Linux / macOS
-
-```bash
-go install github.com/projectdiscovery/katana/cmd/katana@latest
-```
-
-If `katana` is missing, the toolkit still works with reduced discovery coverage.
-
-## 📘 Repo Notes
-
-- `.venv` is ignored and should not be committed.
-- `config.json` is local-only and should not be committed.
-- run artifacts under `findings/runs/` and `reports/runs/` are ignored.
-- top-level generated HTML reports and coding-agent prompts are ignored.
-- local downloaded binaries such as `tools/katana.exe` are ignored.
-- the repo includes `.gitkeep` files so the output directories exist cleanly on GitHub.
-
-## ✅ Current Status
-
-The project now includes:
-- a multi-phase audit architecture
-- run isolation
-- report generation
-- coding-agent remediation prompt generation
-- setup scripts
-- portable repo structure
-
-It is a strong base for production-oriented web security reviews, while still relying on **safe heuristics** in several advanced checks.
+## 📘 Project Hygiene
+- `.venv` and `config.json` are ignored (private).
+- Generated findings and reports are ignored.
+- Use `.gitattributes` to maintain line endings across platforms.
