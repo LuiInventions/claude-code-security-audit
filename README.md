@@ -6,7 +6,13 @@ Portable, defensive security audit toolkit for websites and web APIs on **author
 
 ## 🚀 Quick Start
 
-### 1. Setup Environment
+### 1. Clone the Project
+```bash
+git clone https://github.com/LuiInventions/claude-code-security-audit.git
+cd claude-code-security-audit
+```
+
+### 2. Setup Environment
 First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/claude-code`) and Python 3.11+.
 
 **Windows:**
@@ -20,7 +26,7 @@ chmod +x setup.sh launch-website-audit.sh
 ./setup.sh
 ```
 
-### 2. Start Automated Audit
+### 3. Start Automated Audit
 Run the launcher script and enter the target URL when prompted.
 
 **Windows:**
