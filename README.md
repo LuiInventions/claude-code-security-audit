@@ -25,8 +25,7 @@ First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/
 
 **Linux / macOS:**
 ```bash
-chmod +x setup.sh launch-website-audit.sh
-./setup.sh
+chmod +x setup.sh ./setup.sh
 ```
 
 ### 3. Start claude code
