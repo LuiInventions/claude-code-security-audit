@@ -22,6 +22,10 @@ First, ensure you have **Claude Code** installed (`npm install -g @anthropic-ai/
 ```powershell
 ./setup.ps1
 ```
+**If this fails, try that:
+```powershell
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
+```
 
 **Linux / macOS:**
 ```bash
