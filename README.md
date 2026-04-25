@@ -6,6 +6,10 @@ Portable, defensive security audit toolkit for websites and web APIs on **author
 
 ## 🚀 Quick Start
 
+*git must be installed
+
+### Open new powershell session in a Folder of your choice
+
 ### 1. Clone the Project
 ```bash
 git clone https://github.com/LuiInventions/claude-code-security-audit
